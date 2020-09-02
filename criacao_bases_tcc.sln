@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "criacao_bases_tcc", "criacao_bases_tcc\criacao_bases_tcc.csproj", "{7D1B1078-6720-43DB-A6E7-08B0273A53F2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCC.Application.CriacaoBases", "TCC.Application.CriacaoBases\TCC.Application.CriacaoBases.csproj", "{D0B7556C-7C92-41DD-AE8D-0564FA60B134}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7D1B1078-6720-43DB-A6E7-08B0273A53F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7D1B1078-6720-43DB-A6E7-08B0273A53F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7D1B1078-6720-43DB-A6E7-08B0273A53F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7D1B1078-6720-43DB-A6E7-08B0273A53F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0B7556C-7C92-41DD-AE8D-0564FA60B134}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0B7556C-7C92-41DD-AE8D-0564FA60B134}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0B7556C-7C92-41DD-AE8D-0564FA60B134}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0B7556C-7C92-41DD-AE8D-0564FA60B134}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
