@@ -54,13 +54,40 @@ namespace TCC.Application.CriacaoBases
                 sw.WriteLine("Tweet;Classificacao");
             }
         }
-        static void Main(string[] args)
+
+        public static void InserirRegistrosRandomicoNaBase(int qtdeTweetsPorBase, List<Tweet> tweets, string z)
         {
             int contador = 0;
             var randNum = new Random();
+            while (contador < qtdeTweetsPorBase)
+            {
+                var tweet = tweets.ElementAt(randNum.Next(tweets.Count() - 1));
+                if (!tweet.Usado)
+                {
+                    tweet.Usado = true;
+                    contador++;
+                    InserirRegistroNoDatabase(tweet.Publicacao, tweet.Classificacao, z);
+                }
+            }
+        }
+        public static void InserirRegistroPorParamUsadoNaBase(int qtdeTweetsPorBase, List<Tweet> tweets, string z)
+        {
+            int contador = 0;
+            while (tweets.Where(t => t.Usado == false).Any())
+            {
+                var tweet = tweets.Where(t => t.Usado == false).FirstOrDefault();
+                if (!tweet.Usado)
+                {
+                    tweet.Usado = true;
+                    contador++;
+                    InserirRegistroNoDatabase(tweet.Publicacao, tweet.Classificacao, z);
+                }
+            }
+        }
+        static void Main(string[] args)
+        {
             var tweetsComCyberbullying = new List<Tweet>();
             var tweetsSemCyberbullying = new List<Tweet>();
-
 
             Console.WriteLine("Criando arquivos de texto Z1, Z2 e Z3...");
 
@@ -89,50 +116,26 @@ namespace TCC.Application.CriacaoBases
             Console.WriteLine($"Total Tweets por classificação: \n SIM: {tweetsComCyberbullying.Count()} \n NÃO: {tweetsSemCyberbullying.Count()}");
 
             Console.WriteLine("Obtendo quantidade de registros por base...");
-        /*    var qtdeTweetsPorBase = ObterQuantidadeTweetsPorBase(tweets.Count());
+            var qtdeTweetsSimPorBase = ObterQuantidadeTweetsPorBase(tweetsComCyberbullying.Count());
+            var qtdeTweetNaoPorBase = ObterQuantidadeTweetsPorBase(tweetsSemCyberbullying.Count());
+
 
             Console.WriteLine("Gravando tweets na base 1...");
             #region [Gravando Tweets na Primeira Base]
-            while (contador < qtdeTweetsPorBase)
-            {
-                var tweet = tweets.ElementAt(randNum.Next(tweets.Count() - 1));
-                if (!tweet.Usado)
-                {
-                    tweet.Usado = true;
-                    contador++;
-                    InserirRegistroNoDatabase(tweet.Publicacao, tweet.Classificacao, Z1);
-                }
-            }
+            InserirRegistrosRandomicoNaBase(qtdeTweetsSimPorBase, tweetsComCyberbullying, Z1);
+            InserirRegistrosRandomicoNaBase(qtdeTweetNaoPorBase, tweetsSemCyberbullying, Z1);
             #endregion
 
             Console.WriteLine("Gravando tweets na base 2...");
             #region [Gravando Tweets na Segunda Base]
-            contador = 0;
-            while (contador < qtdeTweetsPorBase)
-            {
-                var tweet = tweets.ElementAt(randNum.Next(tweets.Count() - 1));
-                if (!tweet.Usado)
-                {
-                    tweet.Usado = true;
-                    contador++;
-                    InserirRegistroNoDatabase(tweet.Publicacao, tweet.Classificacao, Z2);
-                }
-            }
+            InserirRegistrosRandomicoNaBase(qtdeTweetsSimPorBase, tweetsComCyberbullying, Z2);
+            InserirRegistrosRandomicoNaBase(qtdeTweetNaoPorBase, tweetsSemCyberbullying, Z2);
             #endregion
 
             Console.WriteLine("Gravando tweets na base 3...");
             #region [Gravando Tweets na Terceira Base]
-            contador = 0;
-            while (tweets.Where(t => t.Usado == false).Any())
-            {
-                var tweet = tweets.Where(t => t.Usado == false).FirstOrDefault();
-                if (!tweet.Usado)
-                {
-                    tweet.Usado = true;
-                    contador++;
-                    InserirRegistroNoDatabase(tweet.Publicacao, tweet.Classificacao, Z3);
-                }
-            }
+            InserirRegistroPorParamUsadoNaBase(qtdeTweetsSimPorBase, tweetsComCyberbullying, Z3);
+            InserirRegistroPorParamUsadoNaBase(qtdeTweetNaoPorBase, tweetsSemCyberbullying, Z3);
             #endregion*/
             Console.WriteLine("Finalizando...");
             Console.ReadKey();
