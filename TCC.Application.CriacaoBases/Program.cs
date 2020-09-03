@@ -8,38 +8,23 @@ namespace TCC.Application.CriacaoBases
 {
     class Program
     {
-        public const string baseTreinamento = "Base_treinamento_tcc.txt";
-        public const string baseTestes = "Base_testes_tcc.txt";
-        public const string baseValidacaoFinal = "Base_validacao_final_tcc.txt";
+        public const string Z1 = "Z1.txt";
+        public const string Z2 = "Z2.txt";
+        public const string Z3 = "Z3.txt";
+
         #region Carrega txt com todos os tweets
         public static string[] CarregarDatabaseCompleto()
         {
-            string[] linhas = File.ReadAllLines(@"C:\TCC_UNIFICADO.txt");
+            string[] linhas = File.ReadAllLines(@"C:\BASE_COMPLETA_TCC.txt");
             return linhas;
         }
         #endregion
 
-        public static void GravarDatabase1(string param1, string param2)
+        public static void InserirRegistroNoDatabase(string tweet, string classificacao, string z)
         {
             var diretorioBase = string.Format("{0}\\{1}\\", Directory.GetCurrentDirectory(), "Bases");
-            var arquivo = File.AppendText(Path.Combine(diretorioBase, baseTreinamento));
-            arquivo.WriteLine($"{param1};{param2}");
-            arquivo.Close();
-        }
-
-        public static void GravarDatabase2(string param1, string param2)
-        {
-            var diretorioBase = string.Format("{0}\\{1}\\", Directory.GetCurrentDirectory(), "Bases");
-            var arquivo = File.AppendText(Path.Combine(diretorioBase, baseTestes));
-            arquivo.WriteLine($"{param1};{param2}");
-            arquivo.Close();
-        }
-
-        public static void GravarDatabase3(string param1, string param2)
-        {
-            var diretorioBase = string.Format("{0}\\{1}\\", Directory.GetCurrentDirectory(), "Bases");
-            var arquivo = File.AppendText(Path.Combine(diretorioBase, baseValidacaoFinal));
-            arquivo.WriteLine($"{param1};{param2}");
+            var arquivo = File.AppendText(Path.Combine(diretorioBase, z));
+            arquivo.WriteLine($"{tweet};{classificacao}");
             arquivo.Close();
         }
 
@@ -54,43 +39,17 @@ namespace TCC.Application.CriacaoBases
             return divisao;
         }
 
-        public static void CriarDatabase1()
+        public static void CriarDatabaseParcial(string z)
         {
             var diretorioBase = string.Format("{0}\\{1}\\", Directory.GetCurrentDirectory(), "Bases");
 
             if (!Directory.Exists(diretorioBase))
                 Directory.CreateDirectory(diretorioBase);
 
-            if (File.Exists(baseTreinamento))
+            if (File.Exists(z))
                 return;
 
-            using (var sw = File.CreateText(Path.Combine(diretorioBase, baseTreinamento)))
-            {
-                sw.WriteLine("Tweet;Classificacao");
-            }
-        }
-
-        public static void CriarDatabase2()
-        {
-            var diretorioBase = string.Format("{0}\\{1}\\", Directory.GetCurrentDirectory(), "Bases");
-
-            if (File.Exists(baseTestes))
-                return;
-
-            using (var sw = File.CreateText(Path.Combine(diretorioBase, baseTestes)))
-            {
-                sw.WriteLine("Tweet;Classificacao");
-            }
-        }
-
-        public static void CriarDatabase3()
-        {
-            var diretorioBase = string.Format("{0}\\{1}\\", Directory.GetCurrentDirectory(), "Bases");
-
-            if (File.Exists(baseValidacaoFinal))
-                return;
-
-            using (var sw = File.CreateText(Path.Combine(diretorioBase, baseValidacaoFinal)))
+            using (var sw = File.CreateText(Path.Combine(diretorioBase, z)))
             {
                 sw.WriteLine("Tweet;Classificacao");
             }
@@ -99,15 +58,17 @@ namespace TCC.Application.CriacaoBases
         {
             int contador = 0;
             var randNum = new Random();
+            var tweetsComCyberbullying = new List<Tweet>();
+            var tweetsSemCyberbullying = new List<Tweet>();
 
-            Console.WriteLine("Criando arquivos de texto...");
 
-            CriarDatabase1();
-            CriarDatabase2();
-            CriarDatabase3();
+            Console.WriteLine("Criando arquivos de texto Z1, Z2 e Z3...");
+
+            CriarDatabaseParcial(Z1);
+            CriarDatabaseParcial(Z2);
+            CriarDatabaseParcial(Z3);
 
             var database = CarregarDatabaseCompleto();
-            var tweets = new List<Tweet>();
 
             Console.WriteLine("Inserindo dados em uma lista...");
 
@@ -118,11 +79,17 @@ namespace TCC.Application.CriacaoBases
                 string[] colunas = dados.Split(';');
                 var texto = Regex.Replace(colunas[0], "[@?=%&/+#-,.!:]", "");
                 var tweet = new Tweet(texto, colunas[1]);
-                tweets.Add(tweet);
+
+                if (tweet.Classificacao == "sim")
+                    tweetsComCyberbullying.Add(tweet);
+                else
+                    tweetsSemCyberbullying.Add(tweet);
             }
 
+            Console.WriteLine($"Total Tweets por classificação: \n SIM: {tweetsComCyberbullying.Count()} \n NÃO: {tweetsSemCyberbullying.Count()}");
+
             Console.WriteLine("Obtendo quantidade de registros por base...");
-            var qtdeTweetsPorBase = ObterQuantidadeTweetsPorBase(tweets.Count());
+        /*    var qtdeTweetsPorBase = ObterQuantidadeTweetsPorBase(tweets.Count());
 
             Console.WriteLine("Gravando tweets na base 1...");
             #region [Gravando Tweets na Primeira Base]
@@ -133,7 +100,7 @@ namespace TCC.Application.CriacaoBases
                 {
                     tweet.Usado = true;
                     contador++;
-                    GravarDatabase1(tweet.Publicacao, tweet.Classificacao);
+                    InserirRegistroNoDatabase(tweet.Publicacao, tweet.Classificacao, Z1);
                 }
             }
             #endregion
@@ -148,7 +115,7 @@ namespace TCC.Application.CriacaoBases
                 {
                     tweet.Usado = true;
                     contador++;
-                    GravarDatabase2(tweet.Publicacao, tweet.Classificacao);
+                    InserirRegistroNoDatabase(tweet.Publicacao, tweet.Classificacao, Z2);
                 }
             }
             #endregion
@@ -163,10 +130,10 @@ namespace TCC.Application.CriacaoBases
                 {
                     tweet.Usado = true;
                     contador++;
-                    GravarDatabase3(tweet.Publicacao, tweet.Classificacao);
+                    InserirRegistroNoDatabase(tweet.Publicacao, tweet.Classificacao, Z3);
                 }
             }
-            #endregion
+            #endregion*/
             Console.WriteLine("Finalizando...");
             Console.ReadKey();
         }
