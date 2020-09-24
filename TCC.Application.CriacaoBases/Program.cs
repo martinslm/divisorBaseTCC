@@ -8,9 +8,8 @@ namespace TCC.Application.CriacaoBases
 {
     class Program
     {
-        public const string Z1 = "Z1.txt";
-        public const string Z2 = "Z2.txt";
-        public const string Z3 = "Z3.txt";
+        public const string treinamento = "treinamento.txt";
+        public const string teste = "teste.txt";
 
         #region Carrega txt com todos os tweets
         public static string[] CarregarDatabaseCompleto()
@@ -28,15 +27,9 @@ namespace TCC.Application.CriacaoBases
             arquivo.Close();
         }
 
-        public static int ObterQuantidadeTweetsPorBase(int totalRegistros)
+        public static int ObterQuantidadeTweetsPorBase75(int totalRegistros)
         {
-            var restoDaDivisao = totalRegistros % 3;
-            var divisao = totalRegistros / 3;
-
-            if (restoDaDivisao > 0)
-                return divisao + 1;
-
-            return divisao;
+            return (totalRegistros * 75) / 100;
         }
 
         public static void CriarDatabaseParcial(string z)
@@ -89,11 +82,10 @@ namespace TCC.Application.CriacaoBases
             var tweetsComCyberbullying = new List<Tweet>();
             var tweetsSemCyberbullying = new List<Tweet>();
 
-            Console.WriteLine("Criando arquivos de texto Z1, Z2 e Z3...");
+            Console.WriteLine("Criando arquivos de texto treinamento e teste...");
 
-            CriarDatabaseParcial(Z1);
-            CriarDatabaseParcial(Z2);
-            CriarDatabaseParcial(Z3);
+            CriarDatabaseParcial(treinamento);
+            CriarDatabaseParcial(teste);
 
             var database = CarregarDatabaseCompleto();
 
@@ -116,29 +108,28 @@ namespace TCC.Application.CriacaoBases
             Console.WriteLine($"Total Tweets por classificação: \n SIM: {tweetsComCyberbullying.Count()} \n NÃO: {tweetsSemCyberbullying.Count()}");
 
             Console.WriteLine("Obtendo quantidade de registros por base...");
-            var qtdeTweetsSimPorBase = ObterQuantidadeTweetsPorBase(tweetsComCyberbullying.Count());
-            var qtdeTweetNaoPorBase = ObterQuantidadeTweetsPorBase(tweetsSemCyberbullying.Count());
+            var qtdeTweetsSimPorBaseTreinamento = ObterQuantidadeTweetsPorBase75(tweetsComCyberbullying.Count());
+            var qtdeTweetNaoPorBaseTreinamento = ObterQuantidadeTweetsPorBase75(tweetsSemCyberbullying.Count());
+            var qtdeTweetsSimPorBaseTeste = tweetsComCyberbullying.Count() - qtdeTweetsSimPorBaseTreinamento;
+            var qtdeTweetNaoPorBaseTeste = tweetsSemCyberbullying.Count() - qtdeTweetNaoPorBaseTreinamento;
 
+            Console.WriteLine($"Quantidade de Tweets Sim por base treinamento {qtdeTweetsSimPorBaseTreinamento}");
+            Console.WriteLine($"Quantidade de Tweets Não por base treinamento {qtdeTweetNaoPorBaseTreinamento}");
+            Console.WriteLine($"Quantidade de Tweets Sim por base teste {qtdeTweetsSimPorBaseTeste}");
+            Console.WriteLine($"Quantidade de Tweets Não por base teste {qtdeTweetNaoPorBaseTeste}");
 
-            Console.WriteLine("Gravando tweets na base 1...");
+            Console.WriteLine("Gravando tweets na base treinamento...");
             #region [Gravando Tweets na Primeira Base]
-            InserirRegistrosRandomicoNaBase(qtdeTweetsSimPorBase, tweetsComCyberbullying, Z1);
-            InserirRegistrosRandomicoNaBase(qtdeTweetNaoPorBase, tweetsSemCyberbullying, Z1);
+            InserirRegistrosRandomicoNaBase(qtdeTweetsSimPorBaseTreinamento, tweetsComCyberbullying, treinamento);
+            InserirRegistrosRandomicoNaBase(qtdeTweetNaoPorBaseTreinamento, tweetsSemCyberbullying, treinamento);
             #endregion
 
-            Console.WriteLine("Gravando tweets na base 2...");
-            #region [Gravando Tweets na Segunda Base]
-            InserirRegistrosRandomicoNaBase(qtdeTweetsSimPorBase, tweetsComCyberbullying, Z2);
-            InserirRegistrosRandomicoNaBase(qtdeTweetNaoPorBase, tweetsSemCyberbullying, Z2);
-            #endregion
-
-            Console.WriteLine("Gravando tweets na base 3...");
+            Console.WriteLine("Gravando tweets na base teste...");
             #region [Gravando Tweets na Terceira Base]
-            InserirRegistroPorParamUsadoNaBase(qtdeTweetsSimPorBase, tweetsComCyberbullying, Z3);
-            InserirRegistroPorParamUsadoNaBase(qtdeTweetNaoPorBase, tweetsSemCyberbullying, Z3);
+            InserirRegistroPorParamUsadoNaBase(qtdeTweetsSimPorBaseTeste, tweetsComCyberbullying, teste);
+            InserirRegistroPorParamUsadoNaBase(qtdeTweetNaoPorBaseTeste, tweetsSemCyberbullying, teste);
             #endregion*/
             Console.WriteLine("Finalizando...");
-            Console.ReadKey();
         }
     }
 }
